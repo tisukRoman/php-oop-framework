@@ -3,6 +3,7 @@
 namespace System;
 
 use System\Contracts\IRouter;
+use System\Exceptions\Not_Found;
 
 class Router implements IRouter {
 	protected string $baseUrl;
@@ -43,6 +44,10 @@ class Router implements IRouter {
 				$activeRoute = $route;
 			}
 		}
+
+    if($activeRoute == null){
+      throw new Not_Found('404 <br> Page does not exist');
+    }
 
 		return $activeRoute;
 	}

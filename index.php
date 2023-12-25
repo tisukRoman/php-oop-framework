@@ -3,8 +3,10 @@
 // System
 use System\Router;
 use System\ModulesDispatcher;
+use Systems\Exceptions\Not_Found;
 
 // Modules
+use Modules\_base\Module as BaseModule;
 use Modules\Articles\Module as ArticlesModule;
 
 const BASE_URL = '/';
@@ -17,7 +19,10 @@ try {
 
     $modulesDispatcher = new ModulesDispatcher();
 
+    $modulesDispatcher->add(new BaseModule());
     $modulesDispatcher->add(new ArticlesModule());
+  
+    $modulesDispatcher->registerRoutes($router);
 
     $uri = $_SERVER['REQUEST_URI'];
 
@@ -26,24 +31,14 @@ try {
     $activeController = $activeRoute['controller'];
     $activeControllerMethod = $activeRoute['method'];
   
-    $activeController->$activeControllerMethod();
-    $html = $activeController->render();
+    echo $activeController->$activeControllerMethod();
 
-    echo $html;
-
-    ?>
-
-    <hr>
-    Menu
-    <a href="<?=BASE_URL?>">Home</a>
-    <a href="<?=BASE_URL?>article/1">Art 1</a>
-    <a href="<?=BASE_URL?>article/2">Art 2</a>
-
-    <?php 
-    
 } 
 
-catch(Throwable $error){
-  echo "<h1>Fatal Error</h1>";
-  print_r($error);
+catch(Not_Found $error){
+  echo "<h1 style='color:red'>{$error->getMessage()}</h1>";
+}
+
+catch(Exception $error){
+  echo "<h1 style='color:red'>{$error->getMessage()}</h1>";
 }

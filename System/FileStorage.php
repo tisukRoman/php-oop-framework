@@ -3,6 +3,7 @@
 namespace System;
 
 use System\Contracts\IStorage;
+use System\Exceptions\Not_Found;
 
 class FileStorage implements IStorage{
 	protected array $records = [];
@@ -22,7 +23,7 @@ class FileStorage implements IStorage{
 		$this->dbPath = $dbPath;
 
 		if(!file_exists($this->dbPath)){
-			throw new Exception("Filestorage with such path {$this->dbPath} does not exist");
+			throw new Not_Found("Filestorage with such path {$this->dbPath} does not exist");
 		}
 
 		$data = json_decode(file_get_contents($this->dbPath), true);
